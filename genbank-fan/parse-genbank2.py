@@ -10,7 +10,7 @@ n = 0
 l = []
 for feat in genome.features:
     if feat.type == "rRNA":
-        if feat.qualifiers['product'][0] == '16S ribosomal RNA':
+        if '16S' in feat.qualifiers['product'][0]:
             start = feat.location.start.position
             end = feat.location.end.position
             pos = [start, end]
