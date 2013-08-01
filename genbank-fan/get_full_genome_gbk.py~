@@ -1,0 +1,21 @@
+from Bio import Entrez
+import sys
+
+l = []
+for line in open (sys.argv[1]):
+    lexemes = line.split(' ')
+    print len(lexemes)
+    if len(lexemes) == 6:
+        print lexemes[-1]
+        id = lexemes[-1]
+        l = id
+    if len(lexemes) == 7:
+        id = lexemes[-1]
+        l = id
+print l
+
+for each in l:
+    Entrez.email = "fyang@iastate.edu"
+    handle = Entrez.efetch(db="nucleotide", id=each, rettype="gb", retmode="text")
+    fp = open(each + '.full.gbk', 'w')
+    fp.write('%s' % handle.read())
