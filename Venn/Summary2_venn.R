@@ -148,3 +148,12 @@ lv_contig$WS<-WS
 
 V_contig<-Venn(lv_contig)
 plot(V_contig, doWeights=FALSE, type="ellipses")
+
+##################
+## To find out which cazy family groups or taxa gorups that are unique to each fraction, do following grouping and sort. starting from matrix m. 
+head(m)
+unique.lm<-cbind(m[, 3], m[, 2], m[, 4])
+m.new<-cbind(m, rowSums(unique.lm))
+head(m.new)
+sort.unique.lm<-m.new[order(m.new[, 6]), ]
+head(sort.unique.lm)
