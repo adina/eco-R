@@ -10,6 +10,21 @@ head(abundance_data)
 length(abundance_data[1,])
 head(abundance_data[, 2:19])
 
+###################################################
+## if this file is used, 
+abundance_data<-read.delim("~/InSync/snisiarc/Hofmockel-agg-qiime-analysis/hack2/rar-summary-orfs-fixed.txt", header=T, row.names=1)
+## reorganize before proceed
+in_all_samples<-cbind(in_all_samples0$PF_LM_H14, in_all_samples0$PF_LM_H03, in_all_samples0$PF_LM_H08, in_all_samples0$PF_LM_H16, in_all_samples0$PF_MI_H01, in_all_samples0$PF_MI_H12, in_all_samples0$PF_MI_H13, in_all_samples0$PF_MI_H06, in_all_samples0$PF_MM_H17, in_all_samples0$PF_MM_H19, in_all_samples0$PF_MM_H20, in_all_samples0$PF_SM_H10, in_all_samples0$PF_SM_H11, in_all_samples0$PF_SM_H02, in_all_samples0$PF_WS_H04, in_all_samples0$PF_WS_H09, in_all_samples0$PF_WS_H15, in_all_samples0$PF_WS_H07)
+rownames(in_all_samples)<-rownames(in_all_samples0)
+###colnames(abundance_data)<-c("PF_LM_H14", "PF_LM_H03", "PF_LM_H08", "PF_LM_H16", "PF_MI_H01", "PF_MI_H12", "PF_MI_H13", "PF_MI_H06", "PF_MM_H17", "PF_MM_H19", "PF_MM_H20", "PF_SM_H10", "PF_SM_H11", "PF_SM_H02", "PF_WS_H04", "PF_WS_H09", "PF_WS_H15", "PF_WS_H07")
+in_all_samples<-as.data.frame(in_all_samples)
+LM <- rowSums(in_all_samples[1:4])
+MI <- rowSums(in_all_samples[5:8])
+MM <- rowSums(in_all_samples[9:11])
+SM <- rowSums(in_all_samples[12:14])
+WS<-rowSums(in_all_samples[15:18])
+####################################################
+
 #filter samples. get rid of contigs of which each sample contains less than min_count. 
 min_count = 5
 in_all_samples <- subset(abundance_data, abundance_data$PF_LM_H08 >=min_count |abundance_data$PF_LM_H14 >=min_count | abundance_data$PF_LM_H16 >=min_count | abundance_data$PF_LM_H03 >=min_count | abundance_data$PF_MI_H01 >=min_count |abundance_data$PF_MI_H06 >=min_count | abundance_data$PF_MI_H12 >=min_count |abundance_data$PF_MI_H13 >=min_count | abundance_data$PF_MM_H17 >=min_count |abundance_data$PF_MM_H19 >=min_count | abundance_data$PF_MM_H20 >=min_count |abundance_data$PF_SM_H02 >=min_count | abundance_data$PF_SM_H10 >=min_count |abundance_data$PF_SM_H11 >=min_count | abundance_data$PF_WS_H04 >=min_count |abundance_data$PF_WS_H07 >=min_count | abundance_data$PF_WS_H09 >=min_count |abundance_data$PF_WS_H15 >=min_count)
@@ -26,9 +41,16 @@ MM <- rowSums(in_all_samples[10:12])
 SM <- rowSums(in_all_samples[13:15])
 WS<-rowSums(in_all_samples[16:19])
 
+###################
+## quick method to calculate the number of shared contigs
+contig<-cbind(LM, MI, MM, SM, WS)
+contig0<-subset(contig, LM>0 & MI>0 & MM>0 & SM>0 & WS>0)
+length(contig0[, 1])
+######################
+
 new<-cbind(in_all_samples[, 1], in_all_samples[, 20:27], LM, MI, MM, SM, WS)
 head(new)
-length(new[1,])
+length(new[,1])
 
 ##reclass all factor strings as characters
 ##i <- sapply(m, is.factor)
@@ -38,13 +60,13 @@ contig<-cbind(new[,1], new[10:14])
 head(contig)
 
 ##consolidate duplicated rows by summing
-contig.con<-ddply(contig, "new[,1]", numcolwise(sum))
-length(contig[, 1])
-length(contig.con[, 1])
+##contig.con<-ddply(contig, "new[,1]", numcolwise(sum))
+##length(contig[, 1])
+##length(contig.con[, 1])
 
-con<-cbind(contig.con[, 2:6])
+con<-cbind(contig[, 2:6])
 head(con)
-rownames(con)<-contig.con[, 1]
+rownames(con)<-contig[, 1]
 head(con)
 m<-as.matrix(con)
 head(m)
@@ -157,3 +179,4 @@ m.new<-cbind(m, rowSums(unique.lm))
 head(m.new)
 sort.unique.lm<-m.new[order(m.new[, 6]), ]
 head(sort.unique.lm)
+
